@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,8 +23,13 @@ public class MainActivity extends AppCompatActivity {
 
                 //To generate code - targets API 21, might need to reconsider if tablets are old
                 CodeGenerator cg = new CodeGenerator(6, ThreadLocalRandom.current());
+                cg.nextString();
+                String unlockcode = cg.getString();
+
 
                 //Display generates code
+                TextView txtv = findViewById(R.id.password);
+                txtv.setText(unlockcode);
             }
         });
 

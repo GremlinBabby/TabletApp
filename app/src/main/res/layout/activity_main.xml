@@ -6,23 +6,38 @@
     android:layout_height="match_parent"
     tools:context="com.example.camil.tabletapp.MainActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <Button
+            android:id="@+id/phoneLock"
+            android:layout_below="@+id/password"
+            android:layout_centerHorizontal="true"
+            android:layout_width="150dp"
+            android:layout_height="70dp"
+            android:text="@string/lock_phones"
+            />
 
-    <Button
-        android:id="@+id/phoneLock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/lock_phones"
-        tools:layout_editor_absoluteX="134dp"
-        tools:layout_editor_absoluteY="342dp" />
+        <ViewAnimator
+            android:id="@+id/dogView"
+            android:layout_centerHorizontal="true"
+            android:layout_width="367dp"
+            android:layout_height="199dp"
+            
+            tools:layout_editor_absoluteX="9dp"
+            tools:layout_editor_absoluteY="8dp" />
 
-    <ViewAnimator
-        android:id="@+id/dogView"
-        android:layout_width="368dp"
-        android:layout_height="326dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/password"
+            android:layout_below="@+id/dogView"
+            android:layout_centerHorizontal="true"
+            android:layout_width="219dp"
+            android:layout_height="51dp"
+            android:text=""
+             />
+
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>
