@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TabletApp</string>
+    <string name="lock_phones">Lock Phones</string>
 </resources>
