@@ -6,16 +6,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class CodeGenerator {
-    /**public static final String chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    public static Random random = new Random();
-
-    String randomString (int len) {
-        StringBuilder stringBuilder = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
-            stringBuilder.append(chars.charAt(random.nextInt(chars.length() ) ) );
-        return stringBuilder.toString();
-    } **/
-    //The above code is really just an attempt I have no idea how to implement in the main activity
 
     //This should work, but targets API 21. If tablets are old, reconsider
     public String nextString() {
