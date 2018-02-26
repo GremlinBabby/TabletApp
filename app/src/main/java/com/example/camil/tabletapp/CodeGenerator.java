@@ -1,13 +1,12 @@
 package com.example.camil.tabletapp;
 
-import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
 public class CodeGenerator {
 
-    //This should work, but targets API 21. If tablets are old, reconsider
+    //This should work, but targets API 19. If tablets are old, reconsider
     public String nextString() {
         for (int idx = 0; idx < buf.length; ++idx)
             buf[idx] = symbols[random.nextInt(symbols.length)];

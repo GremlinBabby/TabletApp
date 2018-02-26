@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 String unlockcode = cg.getString();
 
 
-                //Display generates code
+                //Display generated code
                 TextView txtv = findViewById(R.id.password);
                 txtv.setText(unlockcode);
             }
