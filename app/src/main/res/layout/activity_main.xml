@@ -12,28 +12,30 @@
 
         <Button
             android:id="@+id/phoneLock"
-            android:layout_below="@+id/password"
-            android:layout_centerHorizontal="true"
             android:layout_width="150dp"
             android:layout_height="70dp"
-            android:text="@string/lock_phones"
-            />
-
-        <ViewAnimator
-            android:id="@+id/dogView"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_width="367dp"
-            android:layout_height="199dp"
-            />
+            android:layout_marginBottom="11dp"
+            android:text="@string/lock_phones" />
 
         <TextView
             android:id="@+id/password"
-            android:layout_below="@+id/dogView"
-            android:layout_centerHorizontal="true"
             android:layout_width="219dp"
             android:layout_height="51dp"
-            android:text=""
-             />
+            android:layout_alignBottom="@+id/phoneLock"
+            android:layout_alignLeft="@+id/stageOne"
+            android:layout_alignStart="@+id/stageOne"
+            android:layout_alignTop="@+id/phoneLock"
+            android:text="" />
+
+        <ImageView
+            android:id="@+id/stageOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/puppy3" />
 
     </RelativeLayout>
 

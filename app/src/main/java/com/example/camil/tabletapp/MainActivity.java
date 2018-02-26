@@ -1,9 +1,11 @@
 package com.example.camil.tabletapp;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,6 +16,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImageView stageOne = (ImageView) findViewById(R.id.stageOne);
+        stageOne.setImageResource(R.drawable.stageone);
+        AnimationDrawable stageOneAnimation = (AnimationDrawable) stageOne.getDrawable();
+        stageOneAnimation.start();
 
         final Button button = findViewById(R.id.phoneLock);
         button.setOnClickListener(new View.OnClickListener() {

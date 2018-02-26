@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/puppy2"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/puppy"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/puppy3"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/puppy4"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/puppy5"
+        android:duration="100"/>
+</animation-list>
