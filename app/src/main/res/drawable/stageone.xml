@@ -2,17 +2,38 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/puppy2"
-        android:duration="100"/>
-    <item
-        android:drawable="@drawable/puppy"
-        android:duration="100"/>
+        android:duration="1000"/>
     <item
         android:drawable="@drawable/puppy3"
-        android:duration="100"/>
+        android:duration="10000"/>
+    <item
+        android:drawable="@drawable/puppy"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/puppy3"
+        android:duration="10000"/>
     <item
         android:drawable="@drawable/puppy4"
-        android:duration="100"/>
+        android:duration="8000"/>
+    <item
+        android:drawable="@drawable/puppy3"
+        android:duration="10000"/>
     <item
         android:drawable="@drawable/puppy5"
-        android:duration="100"/>
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/puppy"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/puppy3"
+        android:duration="10000"/>
+    <item
+        android:drawable="@drawable/puppy5"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/puppy"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/puppy4"
+        android:duration="8000"/>
 </animation-list>

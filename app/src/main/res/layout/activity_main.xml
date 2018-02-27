@@ -10,6 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/backgroundStageOne"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/backgroundstageone" />
+
         <Button
             android:id="@+id/phoneLock"
             android:layout_width="150dp"
@@ -23,19 +29,21 @@
             android:id="@+id/password"
             android:layout_width="219dp"
             android:layout_height="51dp"
-            android:layout_alignBottom="@+id/phoneLock"
-            android:layout_alignLeft="@+id/stageOne"
-            android:layout_alignStart="@+id/stageOne"
             android:layout_alignTop="@+id/phoneLock"
+            android:layout_toLeftOf="@+id/phoneLock"
+            android:layout_toStartOf="@+id/phoneLock"
             android:text="" />
 
         <ImageView
             android:id="@+id/stageOne"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/puppy3" />
+            android:layout_marginTop="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/phoneLock"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="49dp"
+            app:srcCompat="@drawable/puppy" />
 
     </RelativeLayout>
 
