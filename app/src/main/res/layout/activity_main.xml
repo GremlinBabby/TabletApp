@@ -37,13 +37,11 @@
 
         <ImageView
             android:id="@+id/stageOne"
-            android:layout_marginTop="250dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/phoneLock"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="49dp"
+            android:layout_alignBottom="@+id/password"
+            android:layout_alignLeft="@+id/password"
+            android:layout_alignStart="@+id/password"
             app:srcCompat="@drawable/puppy" />
 
     </RelativeLayout>
