@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //animation stage One
         ImageView stageOne = (ImageView) findViewById(R.id.stageOne);
         stageOne.setImageResource(R.drawable.stageone);
         AnimationDrawable stageOneAnimation = (AnimationDrawable) stageOne.getDrawable();
@@ -37,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
                 //Display generated code
                 TextView txtv = findViewById(R.id.password);
                 txtv.setText(unlockcode);
+
+                //Display text Code to unlock the phone
+                TextView textCode = findViewById(R.id.code);
+                textCode.setVisibility(View.VISIBLE);
             }
         });
 
