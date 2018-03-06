@@ -36,11 +36,11 @@
 
         <ImageView
             android:id="@+id/stageOne"
-            android:layout_width="500dp"
+            android:layout_width="match_parent"
             android:layout_height="500dp"
             android:layout_above="@+id/phoneLock"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="143dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="137dp"
             android:scaleType="centerInside"
             app:layout_constraintStart_toEndOf="@+id/backgroundStageOne"
             app:srcCompat="@drawable/puppy" />

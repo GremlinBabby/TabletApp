@@ -1,27 +1,35 @@
 {
   "project_info": {
-    "project_number": "78059563029",
-    "firebase_url": "https://tabletapp-4ff01.firebaseio.com",
-    "project_id": "tabletapp-4ff01",
-    "storage_bucket": "tabletapp-4ff01.appspot.com"
+    "project_number": "334367156226",
+    "firebase_url": "https://dog-application.firebaseio.com",
+    "project_id": "dog-application",
+    "storage_bucket": "dog-application.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:78059563029:android:9a4f8118e34cc6cb",
+        "mobilesdk_app_id": "1:334367156226:android:9a4f8118e34cc6cb",
         "android_client_info": {
           "package_name": "com.example.camil.tabletapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "78059563029-e1atb1o8fva2g729sn17pad6bv5htmd1.apps.googleusercontent.com",
+          "client_id": "334367156226-h0uf5io6hv3lk7dglbfb9kg6al4c5cs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.camil.tabletapp",
+            "certificate_hash": "2100d4588ab6be2fdca2b2754618f96771bb2699"
+          }
+        },
+        {
+          "client_id": "334367156226-kkqgh04b0uc2nfrpqqhn17q7o001adqg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCzTW4QtswLmoztjrTPCJJ8IaNgPWdp6xM"
+          "current_key": "AIzaSyAHhZcdiqaTv6phTpdDO0NG4YlehO4q3VQ"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334367156226-kkqgh04b0uc2nfrpqqhn17q7o001adqg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
