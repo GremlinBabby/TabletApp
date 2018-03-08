@@ -3,32 +3,41 @@ package com.example.camil.tabletapp;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
 
     //connection to the firebase
-    DatabaseReference databaseReference;
+    DatabaseReference databaseCode;
+    DatabaseReference databaseTotal;
+
+    TextView totalCountTextView;
 
     //string containing code for unlocking
     String unlockcode;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        totalCountTextView = findViewById(R.id.totalCount);
 
         //initiating the database
-        databaseReference = FirebaseDatabase.getInstance().getReference("Code");
+        databaseCode = FirebaseDatabase.getInstance().getReference("Code");
+        databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
 
         //animation stage One
         ImageView stageOne = (ImageView) findViewById(R.id.stageOne);
@@ -42,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Code for locking phones
 
-                //To generate code - targets API 21, might need to reconsider if tablets are old
+                //To generate code - targets API 21
                 CodeGenerator codeGenerator = new CodeGenerator(6, ThreadLocalRandom.current());
                 codeGenerator.nextString();
                 unlockcode = codeGenerator.getString();
@@ -64,7 +73,25 @@ public class MainActivity extends AppCompatActivity {
 
     //method for storing data in the Firebase
     public void addCode(String unlockcode) {
-       databaseReference.setValue(unlockcode);
+        databaseCode.setValue(unlockcode);
+    }
 
+    //method for checking the total count of codes entered
+    @Override
+    public void onStart() {
+        super.onStart();
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String totalCountOfCodesEntered = dataSnapshot.getValue(String.class);
+                int ourInt = Integer.parseInt(totalCountOfCodesEntered);
+                totalCountTextView.setText(String.valueOf(ourInt));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

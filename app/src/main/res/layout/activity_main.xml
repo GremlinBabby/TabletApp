@@ -75,6 +75,19 @@
             android:textStyle="bold"
             android:visibility="invisible"/>
 
+        <TextView
+            android:id="@+id/totalCount"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignEnd="@+id/phoneLock"
+            android:layout_below="@+id/password"
+            android:layout_marginEnd="106dp"
+            android:layout_marginTop="80dp"
+            android:text="Codes entered"
+            android:textColor="@android:color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
     </RelativeLayout>
 
 
