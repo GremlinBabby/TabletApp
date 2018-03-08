@@ -1,6 +1,5 @@
 package com.example.camil.tabletapp;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -17,11 +16,8 @@ public class CodeGenerator {
         return nextString();
     }
 
-
-    public static final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    public static final String lower = upper.toLowerCase(Locale.ROOT);
     public static final String digits = "0123456789";
-    public static final String alphanum = upper + lower + digits;
+    public static final String numcode = digits;
 
     private final Random random;
 
@@ -39,7 +35,7 @@ public class CodeGenerator {
 
     //Generates an alphanumeric string generator
     public CodeGenerator(int length, Random random) {
-        this(length, random, alphanum);
+        this(5, random, numcode);
     }
 
 

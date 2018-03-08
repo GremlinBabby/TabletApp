@@ -21,8 +21,8 @@
             android:src="@drawable/backgroundstageone" />
 
         <Button
-            android:id="@+id/phoneLock"
-            android:layout_width="150dp"
+            android:id="@+id/phoneLockButton"
+            android:layout_width="300dp"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
@@ -31,14 +31,14 @@
             android:fontFamily="sans-serif"
             android:text="@string/lock_phones"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/stageOne"
+            android:id="@+id/stageOneImageView"
             android:layout_width="match_parent"
             android:layout_height="500dp"
-            android:layout_above="@+id/phoneLock"
+            android:layout_above="@+id/phoneLockButton"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="137dp"
             android:scaleType="centerInside"
@@ -46,46 +46,60 @@
             app:srcCompat="@drawable/puppy" />
 
         <TextView
-            android:id="@+id/password"
-            android:layout_width="150dp"
-            android:layout_height="51dp"
-            android:layout_alignLeft="@+id/code"
-            android:layout_alignStart="@+id/code"
-            android:layout_alignTop="@+id/code"
-            android:layout_marginTop="52dp"
+            android:id="@+id/passwordTextView"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:layout_alignBottom="@+id/phoneLockButton"
+            android:layout_alignEnd="@+id/textAboveCodeTextView"
+            android:background="@drawable/button"
+            android:gravity="bottom"
             android:text=""
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/textAboveCodeTextView"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stageOneImageView"
+            android:layout_marginStart="14dp"
+            android:layout_toEndOf="@+id/phoneLockButton"
+            android:gravity="center"
+            android:text="Code to unlock"
+            android:textAlignment="gravity"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/totalCount"
+            android:layout_width="200dp"
+            android:layout_height="70dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/stageOneImageView"
+            android:layout_marginStart="25dp"
+            android:background="@drawable/button"
+            android:gravity="bottom"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/code"
-            android:layout_width="wrap_content"
+            android:id="@+id/textAboveTotalCountTextView"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginTop="42dp"
-            android:text="Code to unlock"
-            android:textColor="@android:color/black"
+            android:layout_alignStart="@+id/totalCount"
+            android:layout_below="@+id/stageOneImageView"
+            android:gravity="center"
+            android:text="Score"
+            android:textAlignment="gravity"
+            android:textColor="#FFFFFF"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:visibility="invisible"/>
-
-        <TextView
-            android:id="@+id/totalCount"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_alignEnd="@+id/phoneLock"
-            android:layout_below="@+id/password"
-            android:layout_marginEnd="106dp"
-            android:layout_marginTop="80dp"
-            android:text="Codes entered"
-            android:textColor="@android:color/black"
-            android:textSize="30sp"
             android:textStyle="bold" />
 
     </RelativeLayout>

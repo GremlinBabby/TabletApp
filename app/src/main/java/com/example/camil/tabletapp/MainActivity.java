@@ -3,7 +3,6 @@ package com.example.camil.tabletapp;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,7 +14,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
 
         //animation stage One
-        ImageView stageOne = (ImageView) findViewById(R.id.stageOne);
+        ImageView stageOne = (ImageView) findViewById(R.id.stageOneImageView);
         stageOne.setImageResource(R.drawable.stageone);
         AnimationDrawable stageOneAnimation = (AnimationDrawable) stageOne.getDrawable();
         stageOneAnimation.start();
 
-        final Button button = findViewById(R.id.phoneLock);
+        final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,11 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 addCode(unlockcode);
 
                 //Display generated code
-                TextView codeTextView = findViewById(R.id.password);
+                TextView codeTextView = findViewById(R.id.passwordTextView);
                 codeTextView.setText(unlockcode);
+                codeTextView.setVisibility(View.VISIBLE);
 
                 //Display text Code to unlock the phone
-                TextView unlockTextView = findViewById(R.id.code);
+                TextView unlockTextView = findViewById(R.id.textAboveCodeTextView);
                 unlockTextView.setVisibility(View.VISIBLE);
 
             }
