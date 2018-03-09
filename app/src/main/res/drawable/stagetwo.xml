@@ -2,19 +2,19 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/secondstage1"
-        android:duration="1000"/>
+        android:duration="8000"/>
     <item
         android:drawable="@drawable/secondstage2"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage3"
-        android:duration="10000"/>
+        android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage4"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage5"
-        android:duration="10000"/>
+        android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage1"
         android:duration="8000"/>
@@ -29,13 +29,13 @@
         android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage3"
-        android:duration="10000"/>
+        android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage5"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/secondstage1"
-        android:duration="1000"/>
+        android:duration="5000"/>
     <item
         android:drawable="@drawable/secondstage3"
         android:duration="8000"/>

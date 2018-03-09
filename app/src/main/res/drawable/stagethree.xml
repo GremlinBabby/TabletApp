@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/thirdstage1"
+        android:duration="8000"/>
+    <item
+        android:drawable="@drawable/thirdstage2"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/thirdstage3"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/thirdstage4"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/thirdstage5"
+        android:duration="1000"/>
+    <item
+        android:drawable="@drawable/thirdstage6"
+        android:duration="8000"/>
+</animation-list>

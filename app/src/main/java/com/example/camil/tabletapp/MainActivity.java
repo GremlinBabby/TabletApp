@@ -23,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseTotal;
 
     TextView totalCountTextView;
+    String totalScoreString;
+    int totalScoreInt;
+    ImageView background;
+
 
     //string containing code for unlocking
     String unlockcode;
@@ -37,11 +41,53 @@ public class MainActivity extends AppCompatActivity {
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
 
-        //animation stage One
-        ImageView stageOne = (ImageView) findViewById(R.id.stageOneImageView);
-        stageOne.setImageResource(R.drawable.stageone);
-        AnimationDrawable stageOneAnimation = (AnimationDrawable) stageOne.getDrawable();
-        stageOneAnimation.start();
+        //method for checking the total count of codes entered
+
+        super.onStart();
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreString = dataSnapshot.getValue(String.class);
+                totalScoreInt = Integer.parseInt(totalScoreString);
+                totalCountTextView.setText(String.valueOf(totalScoreInt));
+                //changing the animation
+                if (totalScoreInt >= 0) {
+                    ImageView stageOne = findViewById(R.id.dogStateImageView);
+                    stageOne.setImageResource(R.drawable.stageone);
+                    AnimationDrawable stageOneAnimation = (AnimationDrawable) stageOne.getDrawable();
+                    stageOneAnimation.start();
+                    background = findViewById(R.id.backgroundImageView);
+                    background.setImageResource(R.drawable.firststage);
+                } else if (totalScoreInt < 0 && totalScoreInt >= -3) {
+                    ImageView stageTwo = findViewById(R.id.dogStateImageView);
+                    stageTwo.setImageResource(R.drawable.stagetwo);
+                    AnimationDrawable stageTwoAnimation = (AnimationDrawable) stageTwo.getDrawable();
+                    stageTwoAnimation.start();
+                    background = findViewById(R.id.backgroundImageView);
+                    background.setImageResource(R.drawable.secondstage);
+                } else if (totalScoreInt < -3 && totalScoreInt >= -5) {
+                    ImageView stageThree = findViewById(R.id.dogStateImageView);
+                    stageThree.setImageResource(R.drawable.stagethree);
+                    AnimationDrawable stageThreeAnimation = (AnimationDrawable) stageThree.getDrawable();
+                    stageThreeAnimation.start();
+                    background = findViewById(R.id.backgroundImageView);
+                    background.setImageResource(R.drawable.thirdstage);
+                } else {
+                    ImageView stageFour = findViewById(R.id.dogStateImageView);
+                    stageFour.setImageResource(R.drawable.last);
+                    background = findViewById(R.id.backgroundImageView);
+                    background.setImageResource(R.drawable.fourthstage);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
         final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -73,24 +119,5 @@ public class MainActivity extends AppCompatActivity {
     //method for storing data in the Firebase
     public void addCode(String unlockcode) {
         databaseCode.setValue(unlockcode);
-    }
-
-    //method for checking the total count of codes entered
-    @Override
-    public void onStart() {
-        super.onStart();
-        databaseTotal.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String totalCountOfCodesEntered = dataSnapshot.getValue(String.class);
-                int ourInt = Integer.parseInt(totalCountOfCodesEntered);
-                totalCountTextView.setText(String.valueOf(ourInt));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 }
