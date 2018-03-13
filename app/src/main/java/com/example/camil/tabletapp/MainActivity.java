@@ -1,7 +1,6 @@
 package com.example.camil.tabletapp;
 
 import android.graphics.drawable.AnimationDrawable;
-import android.nfc.FormatException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,17 +12,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,12 +29,14 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseTimeStamp;
     DatabaseReference databaseTimeLocked;
     DatabaseReference databaseListTimeStamps;
+    DatabaseReference databasePhone;
 
     TextView totalCountTextView;
     String totalScoreString;
     int totalScoreInt;
     ImageView background;
     String timestampListID;
+    Map phones;
 
 
     //string containing code for unlocking
@@ -59,8 +55,23 @@ public class MainActivity extends AppCompatActivity {
         databaseTimeStamp = FirebaseDatabase.getInstance().getReference("TimeStamp");
         databaseTimeLocked = FirebaseDatabase.getInstance().getReference("TimesLockActivated");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
+        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
+        /*
+        //changing phoneLockStatus on all phones to TRUE
+        databasePhone.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        collectPhoneStatus((Map<String, Object>) dataSnapshot.getValue());
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+*/
 
         //method for checking the total count of codes entered
         super.onStart();
@@ -106,17 +117,48 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //creating Map
+        databasePhone.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                phones = (HashMap<String, Object>) dataSnapshot.getValue();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         //pushing the button LockPhones
         final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Code for locking phones and storing timestamp of locking the phones
-                changeToTrue();
+                //Code for storing timestamp of locking the phones
                 databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
+
+                //storing all time stamps in the list
                 timestampListID = databaseListTimeStamps.push().getKey();
                 databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
+
+                //changing all phoneLocks to true
+                Query unlockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(false);
+                unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            snapshot.getRef().child("PhoneLockStatus").setValue(true);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
                 //To generate code - targets API 21
@@ -145,10 +187,6 @@ public class MainActivity extends AppCompatActivity {
         databaseCode.setValue(unlockcode);
     }
 
-    //changing phoneLockStatus to TRUE
-    public void changeToTrue() {
-        databasePhoneStatus.setValue(true);
-    }
-
 }
+
 
