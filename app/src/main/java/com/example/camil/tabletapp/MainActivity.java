@@ -117,21 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //creating Map
-        databasePhone.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                phones = (HashMap<String, Object>) dataSnapshot.getValue();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
+        
         //pushing the button LockPhones
         final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
