@@ -16,8 +16,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
     int totalScoreInt;
     ImageView background;
     String timestampListID;
-    Map phones;
-
+   
 
     //string containing code for unlocking
     String unlockcode;
@@ -57,21 +57,6 @@ public class MainActivity extends AppCompatActivity {
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
-        /*
-        //changing phoneLockStatus on all phones to TRUE
-        databasePhone.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        collectPhoneStatus((Map<String, Object>) dataSnapshot.getValue());
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-*/
 
         //method for checking the total count of codes entered
         super.onStart();
@@ -117,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        
+
         //pushing the button LockPhones
         final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -164,11 +149,32 @@ public class MainActivity extends AppCompatActivity {
                 TextView unlockTextView = findViewById(R.id.textAboveCodeTextView);
                 unlockTextView.setVisibility(View.VISIBLE);
 
+                //timer after the button is pushed to unlock the phones after pre-set time
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Query lockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(true);
+                        lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                    snapshot.getRef().child("PhoneLockStatus").setValue(false);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }, 20000); //20 seconds - need to change afterwards to 30 minutes
+
             }
         });
     }
 
-    //method for storing data in the Firebase
+    //method for storing generated Code in the Firebase
     public void addCode(String unlockcode) {
         databaseCode.setValue(unlockcode);
     }
