@@ -31,16 +31,24 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseTimeLocked;
     DatabaseReference databaseListTimeStamps;
     DatabaseReference databasePhone;
+    DatabaseReference databaseCodeEntered;
 
     TextView totalCountTextView;
     String totalScoreString;
     int totalScoreInt;
     ImageView background;
     String timestampListID;
-   
+    int increasedTotalScoreInt;
+    String increasedTotalScoreString;
+    String totalScoreStringNow;
+    int totalScoreIntNow;
+    String checkCodeEnteredString;
+    int checkCodeEnteredInt;
+    boolean occured;
+
 
     //string containing code for unlocking
-    String unlockcode;
+    String unlockCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         databaseTimeLocked = FirebaseDatabase.getInstance().getReference("TimesLockActivated");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
+        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
 
 
         //method for checking the total count of codes entered
@@ -108,8 +117,12 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                occured = false;
                 //Code for storing timestamp of locking the phones
                 databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
+
+                //CodeEntered field in database is set to "1"
+                databaseCodeEntered.setValue("1");
 
                 //storing all time stamps in the list
                 timestampListID = databaseListTimeStamps.push().getKey();
@@ -135,14 +148,14 @@ public class MainActivity extends AppCompatActivity {
                 //To generate code - targets API 21
                 CodeGenerator codeGenerator = new CodeGenerator(6, ThreadLocalRandom.current());
                 codeGenerator.nextString();
-                unlockcode = codeGenerator.getString();
+                unlockCode = codeGenerator.getString();
 
                 //add generated code to the database
-                addCode(unlockcode);
+                addCode(unlockCode);
 
                 //Display generated code
                 TextView codeTextView = findViewById(R.id.passwordTextView);
-                codeTextView.setText(unlockcode);
+                codeTextView.setText(unlockCode);
                 codeTextView.setVisibility(View.VISIBLE);
 
                 //Display text Code to unlock the phone
@@ -167,8 +180,42 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+
+
+                        //when nobody entered the code after set time, the total Score is increased by 1
+                        databaseCodeEntered.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                checkCodeEnteredString = dataSnapshot.getValue(String.class);
+                                checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
+                                if (checkCodeEnteredInt == 1 && occured == false) {
+                                    occured = true;
+                                    databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            totalScoreStringNow = dataSnapshot.getValue(String.class);
+                                            totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
+                                            increasedTotalScoreInt = totalScoreIntNow + 1;
+                                            increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
+                                            databaseTotal.setValue(increasedTotalScoreString);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
-                }, 20000); //20 seconds - need to change afterwards to 30 minutes
+                }, 8000); //20 seconds - need to change afterwards to 30 minutes
 
             }
         });
