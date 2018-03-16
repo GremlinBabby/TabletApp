@@ -1,5 +1,9 @@
 package com.example.camil.tabletapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -16,7 +21,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -45,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
     String checkCodeEnteredString;
     int checkCodeEnteredInt;
     boolean occured;
-
+    TextView codeTextView;
+    String newCodeString;
+    TextView unlockTextView;
 
     //string containing code for unlocking
     String unlockCode;
@@ -55,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         totalCountTextView = findViewById(R.id.totalCount);
+        codeTextView = findViewById(R.id.passwordTextView);
 
         //initiating the database
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
@@ -117,24 +125,67 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                occured = false;
-                //Code for storing timestamp of locking the phones
-                databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
+                lock();
+            }
+        });
 
-                //CodeEntered field in database is set to "1"
-                databaseCodeEntered.setValue("1");
 
-                //storing all time stamps in the list
-                timestampListID = databaseListTimeStamps.push().getKey();
-                databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
+        Timer time = new Timer();
+        //Scheduler scheduledTask = new Scheduler();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 12);
+        calendar.set(Calendar.SECOND, 0);
+        time.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                lock();
+            }
+        }, calendar.getTime(), 15000);
 
-                //changing all phoneLocks to true
-                Query unlockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(false);
-                unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+        //86400000 = miliseconds in one day
+    }
+
+    //method for locking the phones
+    public void lock() {
+        occured = false;
+        code();
+        //Code for storing timestamp of locking the phones
+        databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
+
+        //CodeEntered field in database is set to "1"
+        databaseCodeEntered.setValue("1");
+
+        //storing all time stamps in the list
+        timestampListID = databaseListTimeStamps.push().getKey();
+        databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
+
+        //locking all phones
+        Query unlockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(false);
+        unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().child("PhoneLockStatus").setValue(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //timer after the button is pushed to unlock the phones after pre-set time
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Query lockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(true);
+                lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            snapshot.getRef().child("PhoneLockStatus").setValue(true);
+                            snapshot.getRef().child("PhoneLockStatus").setValue(false);
                         }
                     }
 
@@ -145,80 +196,68 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-                //To generate code - targets API 21
-                CodeGenerator codeGenerator = new CodeGenerator(6, ThreadLocalRandom.current());
-                codeGenerator.nextString();
-                unlockCode = codeGenerator.getString();
+                //when nobody entered the code after set time, the total Score is increased by 1
+                databaseCodeEntered.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        checkCodeEnteredString = dataSnapshot.getValue(String.class);
+                        checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
+                        if (checkCodeEnteredInt == 1 && occured == false) {
+                            occured = true;
+                            databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    totalScoreStringNow = dataSnapshot.getValue(String.class);
+                                    totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
+                                    increasedTotalScoreInt = totalScoreIntNow + 1;
+                                    increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
+                                    databaseTotal.setValue(increasedTotalScoreString);
+                                }
 
-                //add generated code to the database
-                addCode(unlockCode);
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                //Display generated code
-                TextView codeTextView = findViewById(R.id.passwordTextView);
-                codeTextView.setText(unlockCode);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }, 8000); //8 seconds - need to change afterwards to 30 minutes
+    }
+
+    public void code() {
+        //generating the code
+        CodeGenerator codeGenerator = new CodeGenerator(6, ThreadLocalRandom.current());
+        codeGenerator.nextString();
+        unlockCode = codeGenerator.getString();
+
+        //add generated code to the database
+        addCode(unlockCode);
+
+        databaseCode.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                newCodeString = dataSnapshot.getValue(String.class);
+                codeTextView.setText(newCodeString);
                 codeTextView.setVisibility(View.VISIBLE);
 
                 //Display text Code to unlock the phone
-                TextView unlockTextView = findViewById(R.id.textAboveCodeTextView);
+                unlockTextView = findViewById(R.id.textAboveCodeTextView);
                 unlockTextView.setVisibility(View.VISIBLE);
+            }
 
-                //timer after the button is pushed to unlock the phones after pre-set time
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Query lockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(true);
-                        lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    snapshot.getRef().child("PhoneLockStatus").setValue(false);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                        //when nobody entered the code after set time, the total Score is increased by 1
-                        databaseCodeEntered.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                checkCodeEnteredString = dataSnapshot.getValue(String.class);
-                                checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
-                                if (checkCodeEnteredInt == 1 && occured == false) {
-                                    occured = true;
-                                    databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            totalScoreStringNow = dataSnapshot.getValue(String.class);
-                                            totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
-                                            increasedTotalScoreInt = totalScoreIntNow + 1;
-                                            increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
-                                            databaseTotal.setValue(increasedTotalScoreString);
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                    }
-                }, 8000); //20 seconds - need to change afterwards to 30 minutes
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
     }
 
     //method for storing generated Code in the Firebase
