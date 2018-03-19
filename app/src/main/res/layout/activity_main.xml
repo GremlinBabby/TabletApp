@@ -75,33 +75,6 @@
             android:textStyle="bold"
             android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/totalCount"
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/dogStateImageView"
-            android:layout_marginStart="25dp"
-            android:background="@drawable/button"
-            android:gravity="bottom"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textAboveTotalCountTextView"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/totalCount"
-            android:layout_below="@+id/dogStateImageView"
-            android:gravity="center"
-            android:text="Score"
-            android:textAlignment="gravity"
-            android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
     </RelativeLayout>
 
 

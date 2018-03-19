@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databasePhone;
     DatabaseReference databaseCodeEntered;
 
-    TextView totalCountTextView;
+
     String totalScoreString;
     int totalScoreInt;
     ImageView background;
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     TextView codeTextView;
     String newCodeString;
     TextView unlockTextView;
+    Button button;
 
     //string containing code for unlocking
     String unlockCode;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        totalCountTextView = findViewById(R.id.totalCount);
+        button = findViewById(R.id.phoneLockButton);
         codeTextView = findViewById(R.id.passwordTextView);
 
         //initiating the database
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 totalScoreString = dataSnapshot.getValue(String.class);
                 totalScoreInt = Integer.parseInt(totalScoreString);
-                totalCountTextView.setText(String.valueOf(totalScoreInt));
                 //changing the animation
                 if (totalScoreInt >= 100) {
                     ImageView stageOne = findViewById(R.id.dogStateImageView);
@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //pushing the button LockPhones
-        final Button button = findViewById(R.id.phoneLockButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
         Timer time = new Timer();
         //Scheduler scheduledTask = new Scheduler();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 12);
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 07);
         calendar.set(Calendar.SECOND, 0);
         time.schedule(new TimerTask() {
             @Override
@@ -167,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     snapshot.getRef().child("PhoneLockStatus").setValue(true);
+
                 }
             }
 
@@ -212,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
                                     increasedTotalScoreInt = totalScoreIntNow + 1;
                                     increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
                                     databaseTotal.setValue(increasedTotalScoreString);
+                                    codeTextView.setVisibility(View.INVISIBLE);
+                                    unlockTextView.setVisibility(View.INVISIBLE);
                                 }
 
                                 @Override
