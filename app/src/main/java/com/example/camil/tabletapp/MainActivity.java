@@ -119,6 +119,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreStringNow = dataSnapshot.getValue(String.class);
+                totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
+                increasedTotalScoreInt = totalScoreIntNow + 1;
+                increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         //pushing the button LockPhones
         button.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         Timer time = new Timer();
         //Scheduler scheduledTask = new Scheduler();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.HOUR_OF_DAY, 18);
         calendar.set(Calendar.MINUTE, 07);
         calendar.set(Calendar.SECOND, 0);
         time.schedule(new TimerTask() {
@@ -140,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 lock();
             }
-        }, calendar.getTime(), 15000);
+        }, calendar.getTime(), 86400000);
 
         //86400000 = miliseconds in one day
     }
@@ -186,34 +202,21 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             snapshot.getRef().child("PhoneLockStatus").setValue(false);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                            codeTextView.setVisibility(View.INVISIBLE);
+                            unlockTextView.setVisibility(View.INVISIBLE);
 
 
-                //when nobody entered the code after set time, the total Score is increased by 1
-                databaseCodeEntered.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        checkCodeEnteredString = dataSnapshot.getValue(String.class);
-                        checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
-                        if (checkCodeEnteredInt == 1 && occured == false) {
-                            occured = true;
-                            databaseTotal.addListenerForSingleValueEvent(new ValueEventListener() {
+                            //when nobody entered the code after set time, the total Score is increased by 1
+                            databaseCodeEntered.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    totalScoreStringNow = dataSnapshot.getValue(String.class);
-                                    totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
-                                    increasedTotalScoreInt = totalScoreIntNow + 1;
-                                    increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
-                                    databaseTotal.setValue(increasedTotalScoreString);
-                                    codeTextView.setVisibility(View.INVISIBLE);
-                                    unlockTextView.setVisibility(View.INVISIBLE);
+                                    checkCodeEnteredString = dataSnapshot.getValue(String.class);
+                                    checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
+                                    if (checkCodeEnteredInt == 1 && occured == false) {
+                                        occured = true;
+                                        databaseTotal.setValue(increasedTotalScoreString);
+                                        databaseCodeEntered.setValue("1");
+                                    }
                                 }
 
                                 @Override
@@ -221,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             });
+
                         }
                     }
 
@@ -230,8 +234,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 8000); //8 seconds - need to change afterwards to 30 minutes
+        }, 15000); //8 seconds - need to change afterwards to 30 minutes
     }
+
 
     public void code() {
         //generating the code
@@ -259,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     //method for storing generated Code in the Firebase
