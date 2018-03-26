@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         //Scheduler scheduledTask = new Scheduler();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 18);
-        calendar.set(Calendar.MINUTE, 07);
+        calendar.set(Calendar.MINUTE, 00);
         calendar.set(Calendar.SECOND, 0);
         time.schedule(new TimerTask() {
             @Override
@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 15000); //8 seconds - need to change afterwards to 30 minutes
+        }, 1800000); //8 seconds - need to change afterwards to 30 minutes
     }
 
 
