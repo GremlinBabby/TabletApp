@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,34 +30,31 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MainActivity extends AppCompatActivity {
 
     //connection to the firebase
-    DatabaseReference databaseCode;
-    DatabaseReference databaseTotal;
-    DatabaseReference databasePhoneStatus;
-    DatabaseReference databaseTimeStamp;
-    DatabaseReference databaseTimeLocked;
-    DatabaseReference databaseListTimeStamps;
-    DatabaseReference databasePhone;
-    DatabaseReference databaseCodeEntered;
+    private DatabaseReference databaseCode;
+    private DatabaseReference databaseTotal;
+    private DatabaseReference databaseTimeStamp;
+    private DatabaseReference databaseListTimeStamps;
+    private DatabaseReference databasePhone;
+    private DatabaseReference databaseCodeEntered;
 
 
-    String totalScoreString;
-    int totalScoreInt;
-    ImageView background;
-    String timestampListID;
-    int increasedTotalScoreInt;
-    String increasedTotalScoreString;
-    String totalScoreStringNow;
-    int totalScoreIntNow;
-    String checkCodeEnteredString;
-    int checkCodeEnteredInt;
-    boolean occured;
-    TextView codeTextView;
-    String newCodeString;
-    TextView unlockTextView;
-    Button button;
-
-    //string containing code for unlocking
-    String unlockCode;
+    private String totalScoreString;
+    private int totalScoreInt;
+    private ImageView background;
+    private String timestampListID;
+    private int increasedTotalScoreInt;
+    private String increasedTotalScoreString;
+    private String totalScoreStringNow;
+    private int totalScoreIntNow;
+    private String checkCodeEnteredString;
+    private int checkCodeEnteredInt;
+    private boolean occured;
+    private TextView codeTextView;
+    private String newCodeString;
+    private TextView unlockTextView;
+    private Button button;
+    private MediaPlayer musicMP;
+    private String unlockCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //initiating the database
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
-        databasePhoneStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseTimeStamp = FirebaseDatabase.getInstance().getReference("TimeStamp");
-        databaseTimeLocked = FirebaseDatabase.getInstance().getReference("TimesLockActivated");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
@@ -137,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //pushing the button LockPhones
+        musicMP = MediaPlayer.create(this, R.raw.sound);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,11 +141,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         Timer time = new Timer();
         //Scheduler scheduledTask = new Scheduler();
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 18);
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
         calendar.set(Calendar.MINUTE, 00);
         calendar.set(Calendar.SECOND, 0);
         time.schedule(new TimerTask() {
@@ -156,14 +153,17 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 lock();
             }
-        }, calendar.getTime(), 86400000);
+        }, calendar.getTime()); //1000*60*60*24
+        */
 
         //86400000 = miliseconds in one day
     }
 
+
     //method for locking the phones
     public void lock() {
         occured = false;
+        musicMP.start();
         code();
         //Code for storing timestamp of locking the phones
         databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
