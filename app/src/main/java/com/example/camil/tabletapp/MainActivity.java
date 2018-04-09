@@ -1,9 +1,5 @@
 package com.example.camil.tabletapp;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
@@ -12,17 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -34,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseTotal;
     private DatabaseReference databaseTimeStamp;
     private DatabaseReference databaseListTimeStamps;
-    private DatabaseReference databasePhone;
     private DatabaseReference databaseCodeEntered;
+    private DatabaseReference databasePhoneLockStatus;
 
 
     private String totalScoreString;
@@ -68,9 +61,10 @@ public class MainActivity extends AppCompatActivity {
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
         databaseTimeStamp = FirebaseDatabase.getInstance().getReference("TimeStamp");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
         databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
+        databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
 
+        databasePhoneLockStatus.setValue(false);
 
         //method for checking the total count of codes entered
         super.onStart();
@@ -131,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         //pushing the button LockPhones
         musicMP = MediaPlayer.create(this, R.raw.sound);
         button.setOnClickListener(new View.OnClickListener() {
@@ -140,23 +133,6 @@ public class MainActivity extends AppCompatActivity {
                 lock();
             }
         });
-
-/*
-        Timer time = new Timer();
-        //Scheduler scheduledTask = new Scheduler();
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 00);
-        calendar.set(Calendar.SECOND, 0);
-        time.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                lock();
-            }
-        }, calendar.getTime()); //1000*60*60*24
-        */
-
-        //86400000 = miliseconds in one day
     }
 
 
@@ -175,56 +151,23 @@ public class MainActivity extends AppCompatActivity {
         timestampListID = databaseListTimeStamps.push().getKey();
         databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
 
-        //locking all phones
-        Query unlockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(false);
-        unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    snapshot.getRef().child("PhoneLockStatus").setValue(true);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        databasePhoneLockStatus.setValue(true);
 
         //timer after the button is pushed to unlock the phones after pre-set time
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Query lockedPhones = databasePhone.orderByChild("PhoneLockStatus").equalTo(true);
-                lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+                databasePhoneLockStatus.setValue(false);
+                //when nobody entered the code after set time, the total Score is increased by 1
+                databaseCodeEntered.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            snapshot.getRef().child("PhoneLockStatus").setValue(false);
-                            codeTextView.setVisibility(View.INVISIBLE);
-                            unlockTextView.setVisibility(View.INVISIBLE);
-
-
-                            //when nobody entered the code after set time, the total Score is increased by 1
-                            databaseCodeEntered.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    checkCodeEnteredString = dataSnapshot.getValue(String.class);
-                                    checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
-                                    if (checkCodeEnteredInt == 1 && occured == false) {
-                                        occured = true;
-                                        databaseTotal.setValue(increasedTotalScoreString);
-                                        databaseCodeEntered.setValue("1");
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
-
+                        checkCodeEnteredString = dataSnapshot.getValue(String.class);
+                        checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
+                        if (checkCodeEnteredInt == 1 && occured == false) {
+                            occured = true;
+                            databaseTotal.setValue(increasedTotalScoreString);
+                            databaseCodeEntered.setValue("1");
                         }
                     }
 
@@ -234,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, 1800000); //8 seconds - need to change afterwards to 30 minutes
+        }, 1800000); //1800000 = 30 minutes
     }
 
 
