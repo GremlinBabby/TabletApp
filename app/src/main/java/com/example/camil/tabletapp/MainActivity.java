@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     //connection to the firebase
     private DatabaseReference databaseCode;
     private DatabaseReference databaseTotal;
-    private DatabaseReference databaseTimeStamp;
     private DatabaseReference databaseListTimeStamps;
     private DatabaseReference databasePhoneLockStatus;
     private DatabaseReference databaseUnlockIdentifier;
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private String totalScoreString;
     private int totalScoreInt;
     private ImageView background;
-    private String timestampListID;
     private int increasedTotalScoreInt;
     private String increasedTotalScoreString;
     private String totalScoreStringNow;
@@ -45,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView codeTextView;
     private String newCodeString;
     private TextView unlockTextView;
-    private Button button;
     private MediaPlayer musicMP;
-    private String unlockCode;
     private boolean cheater;
     private boolean isRunning;
 
@@ -55,14 +51,13 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button = findViewById(R.id.phoneLockButton);
+        Button button = findViewById(R.id.phoneLockButton);
         codeTextView = findViewById(R.id.passwordTextView);
         isRunning = false;
 
         //initiating the database
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
-        databaseTimeStamp = FirebaseDatabase.getInstance().getReference("TimeStamp");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
@@ -126,14 +121,14 @@ public class MainActivity extends AppCompatActivity {
                     stageOneAnimation.start();
                     background = findViewById(R.id.backgroundImageView);
                     background.setImageResource(R.drawable.firststage);
-                } else if (totalScoreInt < 100 && totalScoreInt >= 97) {
+                } else if (totalScoreInt >= 97) {
                     ImageView stageTwo = findViewById(R.id.dogStateImageView);
                     stageTwo.setImageResource(R.drawable.stagetwo);
                     AnimationDrawable stageTwoAnimation = (AnimationDrawable) stageTwo.getDrawable();
                     stageTwoAnimation.start();
                     background = findViewById(R.id.backgroundImageView);
                     background.setImageResource(R.drawable.secondstage);
-                } else if (totalScoreInt < 97 && totalScoreInt >= 95) {
+                } else if (totalScoreInt >= 95) {
                     ImageView stageThree = findViewById(R.id.dogStateImageView);
                     stageThree.setImageResource(R.drawable.stagethree);
                     AnimationDrawable stageThreeAnimation = (AnimationDrawable) stageThree.getDrawable();
@@ -160,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isRunning == false) {
+                if (!isRunning) {
                     lock();
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "Phones are locked!", Toast.LENGTH_SHORT);
@@ -179,15 +174,11 @@ public class MainActivity extends AppCompatActivity {
         cheater = false;
         musicMP.start();
         code();
-        //Code for storing timestamp of locking the phones
-        databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
-
-        //storing all time stamps in the list
-        timestampListID = databaseListTimeStamps.push().getKey();
-        databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
-
         databasePhoneLockStatus.setValue(true);
 
+        //storing all time stamps in the list
+        String timestampListID = databaseListTimeStamps.push().getKey();
+        databaseListTimeStamps.child(timestampListID).setValue(ServerValue.TIMESTAMP);
 
         //timer after the button is pushed to unlock the phones after pre-set time
         new Timer().schedule(new TimerTask() {
@@ -195,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 databasePhoneLockStatus.setValue(false);
                 isRunning = false;
-                if (cheater == false) {
+                if (!cheater) {
                     databaseTotal.setValue(increasedTotalScoreString);
                 }
             }
@@ -207,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         //generating the code
         CodeGenerator codeGenerator = new CodeGenerator(6, ThreadLocalRandom.current());
         codeGenerator.nextString();
-        unlockCode = codeGenerator.getString();
+        String unlockCode = codeGenerator.getString();
 
         //add generated code to the database
         addCode(unlockCode);
