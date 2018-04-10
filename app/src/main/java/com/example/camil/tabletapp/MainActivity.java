@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseTotal;
     private DatabaseReference databaseTimeStamp;
     private DatabaseReference databaseListTimeStamps;
-    private DatabaseReference databaseCodeEntered;
     private DatabaseReference databasePhoneLockStatus;
+    private DatabaseReference databaseUnlockIdentifier;
 
 
     private String totalScoreString;
@@ -39,15 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private String increasedTotalScoreString;
     private String totalScoreStringNow;
     private int totalScoreIntNow;
-    private String checkCodeEnteredString;
-    private int checkCodeEnteredInt;
-    private boolean occured;
     private TextView codeTextView;
     private String newCodeString;
     private TextView unlockTextView;
     private Button button;
     private MediaPlayer musicMP;
     private String unlockCode;
+    private boolean cheater;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,10 +60,52 @@ public class MainActivity extends AppCompatActivity {
         databaseTotal = FirebaseDatabase.getInstance().getReference("Total");
         databaseTimeStamp = FirebaseDatabase.getInstance().getReference("TimeStamp");
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
-        databaseCodeEntered = FirebaseDatabase.getInstance().getReference("CodeEntered");
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
+        databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
 
         databasePhoneLockStatus.setValue(false);
+
+        databaseUnlockIdentifier.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                cheater = true;
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                cheater = true;
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseTotal.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalScoreStringNow = dataSnapshot.getValue(String.class);
+                totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
+                increasedTotalScoreInt = totalScoreIntNow + 1;
+                increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //method for checking the total count of codes entered
         super.onStart();
@@ -109,21 +150,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        databaseTotal.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                totalScoreStringNow = dataSnapshot.getValue(String.class);
-                totalScoreIntNow = Integer.parseInt(totalScoreStringNow);
-                increasedTotalScoreInt = totalScoreIntNow + 1;
-                increasedTotalScoreString = Integer.toString(increasedTotalScoreInt);
 
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         //pushing the button LockPhones
         musicMP = MediaPlayer.create(this, R.raw.sound);
@@ -138,14 +165,11 @@ public class MainActivity extends AppCompatActivity {
 
     //method for locking the phones
     public void lock() {
-        occured = false;
+        cheater = false;
         musicMP.start();
         code();
         //Code for storing timestamp of locking the phones
         databaseTimeStamp.setValue(ServerValue.TIMESTAMP);
-
-        //CodeEntered field in database is set to "1"
-        databaseCodeEntered.setValue("1");
 
         //storing all time stamps in the list
         timestampListID = databaseListTimeStamps.push().getKey();
@@ -153,31 +177,17 @@ public class MainActivity extends AppCompatActivity {
 
         databasePhoneLockStatus.setValue(true);
 
+
         //timer after the button is pushed to unlock the phones after pre-set time
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 databasePhoneLockStatus.setValue(false);
-                //when nobody entered the code after set time, the total Score is increased by 1
-                databaseCodeEntered.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        checkCodeEnteredString = dataSnapshot.getValue(String.class);
-                        checkCodeEnteredInt = Integer.parseInt(checkCodeEnteredString);
-                        if (checkCodeEnteredInt == 1 && occured == false) {
-                            occured = true;
-                            databaseTotal.setValue(increasedTotalScoreString);
-                            databaseCodeEntered.setValue("1");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                if (cheater == false){
+                    databaseTotal.setValue(increasedTotalScoreString);
+                }
             }
-        }, 1800000); //1800000 = 30 minutes
+        }, 60000); //1800000 = 30 minutes
     }
 
 
