@@ -4,10 +4,12 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer musicMP;
     private String unlockCode;
     private boolean cheater;
+    private boolean isRunning;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         button = findViewById(R.id.phoneLockButton);
         codeTextView = findViewById(R.id.passwordTextView);
+        isRunning = false;
 
         //initiating the database
         databaseCode = FirebaseDatabase.getInstance().getReference("Code");
@@ -151,13 +155,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         //pushing the button LockPhones
         musicMP = MediaPlayer.create(this, R.raw.sound);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                lock();
+                if (isRunning == false) {
+                    lock();
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "Phones are locked!", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    toast.show();
+                }
+
             }
         });
     }
@@ -165,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     //method for locking the phones
     public void lock() {
+        isRunning = true;
         cheater = false;
         musicMP.start();
         code();
@@ -183,11 +194,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 databasePhoneLockStatus.setValue(false);
-                if (cheater == false){
+                isRunning = false;
+                if (cheater == false) {
                     databaseTotal.setValue(increasedTotalScoreString);
                 }
             }
-        }, 60000); //1800000 = 30 minutes
+        }, 40000); //1800000 = 30 minutes
     }
 
 
