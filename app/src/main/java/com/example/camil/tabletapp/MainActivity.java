@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseListTimeStamps;
     private DatabaseReference databasePhoneLockStatus;
     private DatabaseReference databaseUnlockIdentifier;
+    private DatabaseReference databasePhone;
 
 
     private String totalScoreString;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
+        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
         databasePhoneLockStatus.setValue(false);
 
@@ -173,6 +176,21 @@ public class MainActivity extends AppCompatActivity {
         isRunning = true;
         cheater = false;
         musicMP.start();
+
+        Query lockedPhones = databasePhone.orderByChild("Name").equalTo("Hmette");
+        lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().child("Name").setValue("Himette");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         code();
         databasePhoneLockStatus.setValue(true);
 
@@ -185,12 +203,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 databasePhoneLockStatus.setValue(false);
+                Query unlockedPhones = databasePhone.orderByChild("Name").equalTo("Himette");
+                unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            snapshot.getRef().child("Name").setValue("Hmette");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
                 isRunning = false;
                 if (!cheater) {
                     databaseTotal.setValue(increasedTotalScoreString);
                 }
             }
-        }, 40000); //1800000 = 30 minutes
+        }, 60000); //1800000 = 30 minutes
     }
 
 
