@@ -7,7 +7,7 @@
         android:drawable="@drawable/puppy3"
         android:duration="8000"/>
     <item
-        android:drawable="@drawable/puppy"
+        android:drawable="@drawable/puppy5"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/puppy3"
@@ -22,7 +22,7 @@
         android:drawable="@drawable/puppy5"
         android:duration="1000"/>
     <item
-        android:drawable="@drawable/puppy"
+        android:drawable="@drawable/puppy4"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/puppy3"
@@ -31,7 +31,7 @@
         android:drawable="@drawable/puppy5"
         android:duration="1000"/>
     <item
-        android:drawable="@drawable/puppy"
+        android:drawable="@drawable/puppy2"
         android:duration="1000"/>
     <item
         android:drawable="@drawable/puppy4"

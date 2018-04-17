@@ -43,7 +43,7 @@
             android:layout_marginBottom="56dp"
             android:scaleType="centerInside"
             app:layout_constraintStart_toEndOf="@+id/backgroundImageView"
-            app:srcCompat="@drawable/puppy" />
+            app:srcCompat="@drawable/puppy2" />
 
         <TextView
             android:id="@+id/passwordTextView"

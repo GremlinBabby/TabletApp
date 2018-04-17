@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseListTimeStamps;
     private DatabaseReference databasePhoneLockStatus;
     private DatabaseReference databaseUnlockIdentifier;
-    private DatabaseReference databasePhone;
-
 
     private String totalScoreString;
     private int totalScoreInt;
@@ -84,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         databaseListTimeStamps = FirebaseDatabase.getInstance().getReference("ListTimeStamps");
         databasePhoneLockStatus = FirebaseDatabase.getInstance().getReference("PhoneLockStatus");
         databaseUnlockIdentifier = FirebaseDatabase.getInstance().getReference("UnlockIdentifier");
-        databasePhone = FirebaseDatabase.getInstance().getReference("Phone");
 
         databasePhoneLockStatus.setValue(false);
 
@@ -199,20 +196,6 @@ public class MainActivity extends AppCompatActivity {
         cheater = false;
         musicMP.start();
 
-        /*Query lockedPhones = databasePhone.orderByChild("Name").equalTo("Hmette");
-        lockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    snapshot.getRef().child("Name").setValue("Himette");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });*/
-
         code();
         databasePhoneLockStatus.setValue(true);
 
@@ -225,20 +208,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 databasePhoneLockStatus.setValue(false);
-                Query unlockedPhones = databasePhone.orderByChild("Name").equalTo("Himette");
-                unlockedPhones.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            snapshot.getRef().child("Name").setValue("Hmette");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
                 isRunning = false;
                 if (!cheater) {
                     databaseTotal.setValue(increasedTotalScoreString);
